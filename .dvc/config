@@ -1,2 +1,4 @@
+[core]
+    remote = myremote
 ['remote "myremote"']
-    url = C:\Users\sandeepkumar\OneDrive\Desktop\mlops\temp_storage
+    url = C:\Users\sandeepkumar\OneDrive\Desktop\dvc_remote
