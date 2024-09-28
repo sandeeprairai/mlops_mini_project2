@@ -40,4 +40,12 @@ jobs:
         run:
           python -m unittest tests/test_model.py
 
+      - name : Promote model to Production
+        if: success()
+        env:
+          DAGSHUB_PAT: ${{ secrets.DAGSHUB_PAT }}
+        run: python scripts/promote_model.py
+
+
+
         
