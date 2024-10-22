@@ -81,12 +81,6 @@ jobs:
             docker run -p 80:5000 --name my-app \
               -e DAGSHUB_PAT=${{ secrets.DAGSHUB_PAT }} \
               ${{ secrets.DOCKER_HUB_USERNAME }}/emotion2:latest
-          timeout: 600 # increased timeout to 10 minutes
-          command_timeout: 300 # increase the command timeout to 5 minutes
-
-
-
-
-
-
+          timeout: 10m # specify 10 minutes timeout with 'm' unit
+          command_timeout: 5m # specify 5 minutes for command timeout
           
