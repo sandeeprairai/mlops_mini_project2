@@ -82,5 +82,5 @@ jobs:
               -e DAGSHUB_PAT=${{ secrets.DAGSHUB_PAT }} \
               ${{ secrets.DOCKER_HUB_USERNAME }}/emotion2:latest
           timeout: 10m # specify 10 minutes timeout with 'm' unit
-          command_timeout: 5m # specify 5 minutes for command timeout
+          command_timeout: 10m # specify 5 minutes for command timeout
           
