@@ -109,7 +109,7 @@ jobs:
             host: ${{ secrets.EC2_HOST}}
             username: ${{ secrets.EC2_USER }}
             key: ${{secrets.EC2_SSH_KEY}}
-            scripts: |
+            script: |
                 aws configure set aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}}
                 aws configure set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}}
                 aws configure set default.region us-east-1
