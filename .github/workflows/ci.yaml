@@ -101,8 +101,25 @@ jobs:
       - name: Push Docker image to AWS ECR
         run: |
          docker push 867344466514.dkr.ecr.us-east-1.amazonaws.com/sandeep_ecr:latest
-    
       
-    
-       
-    
+      - name : Deploy to EC2 
+        if: success()
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+            host: ${{ secrets.EC2_HOST}}
+            username: ${{ secrets.EC2_USER }}
+            key: ${{secrets.EC2_SSH_KEY}}
+            scripts: |
+                aws configure ser aws_access_key_id ${{secrets.AWS_ACCESS_KEY_ID}}
+                aws configure set aws_secret_access_key ${{secrets.AWS_SECRET_ACCESS_KEY}}
+                aws configure set default.region us-east-1
+                aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 867344466514.dkr.ecr.us-east-1.amazonaws.com
+                docker pull  867344466514.dkr.ecr.us-east-1.amazonaws.com/sandeep_ecr:latest
+                docker stop my-app || true
+                docker rm my-app || true
+                docker run  -p 80:5000 -e DAGSHUB_PAT=${{secrets.DAGSHUB_PAT}}  --name campusx-app  867344466514.dkr.ecr.us-east-1.amazonaws.com/sandeep_ecr:latest
+        
+          
+        
+          
+        
