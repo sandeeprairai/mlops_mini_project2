@@ -1,20 +1,20 @@
-name: CI Pipeline
+name: CI Pipeline 
 
-on: push
+on: push 
 
 jobs:
-  project-testing:
-    runs-on: ubuntu-latest
+   project-testing:
+      runs-on: ubuntu-latest 
 
-    steps:
-      - name: Checkout code
+      steps:
+      - name: checkout code 
         uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10'
-
+           python-version: '3.10'
+      
       - name: Cache pip dependencies
         uses: actions/cache@v3
         with:
@@ -23,54 +23,45 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install dependencies
+
+      - name: install dependencies
         run: |
           pip install -r requirements.txt
 
-      - name: Fix model-specific dependencies
-        run: |
-          # Fetch model's environment and install dependencies
-          mlflow.pyfunc.get_model_dependencies(model_uri="models:/emotion-model/production")
-          pip install -r environment.yml
-
-      - name: Run pipeline
+      - name: run pipeline  
         env:
-          DAGSHUB_PAT: ${{ secrets.DAGSHUB_PAT }}
+           DAGSHUB_PAT: ${{ secrets.DAGSHUB_PAT}}
         run: |
           dvc repro
-
+      
       - name: Run model test
         env:
           DAGSHUB_PAT: ${{ secrets.DAGSHUB_PAT }}
-        run: |
+        run:
           python -m unittest tests/test_model.py
 
-      - name: Promote model to Production
+      - name : Promote model to Production
         if: success()
         env:
           DAGSHUB_PAT: ${{ secrets.DAGSHUB_PAT }}
-        run: |
-          python scripts/promote_model.py
-
-      - name: Run Flask app test
+        run: python scripts/promote_model.py
+      
+      - name : Run Flask app test
         if: success()
         env:
           DAGSHUB_PAT: ${{ secrets.DAGSHUB_PAT }}
-        run: |
-          python -m unittest tests/test_flask_app.py
-
+        run: python -m unittest tests/test_flask_app.py
+      
       - name: Log in to Docker Hub
         if: success()
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
       - name: Build Docker image
         if: success()
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/emotion2:latest .
-
       - name: Push Docker image to Docker Hub
         if: success()
         run: |
@@ -92,3 +83,10 @@ jobs:
               ${{ secrets.DOCKER_HUB_USERNAME }}/emotion2:latest
           timeout: 600 # increased timeout to 10 minutes
           command_timeout: 300 # increase the command timeout to 5 minutes
+
+
+
+
+
+
+          
